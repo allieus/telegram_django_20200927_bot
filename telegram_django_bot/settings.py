@@ -19,11 +19,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+import environ
+
+env = environ.Env()  # TODO: 외부파일로 정의된 환경변수 목록을 읽어들이도록 할 수 있습니다.
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "!zk3&ez08^i9-u&@%*0j3duikrx@5%wji*cl7k1jt=eh847yn7"
+SECRET_KEY = env.str("SECRET_KEY", "-- FIXME --")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", True)  # true,1,t
 
 ALLOWED_HOSTS = ["*"]  # FIXME: 좋은 선택이 아님.
 
@@ -114,5 +118,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
+
+
+try:
+    import django_heroku
+
+    django_heroku.settings(locals())
+except ImportError:
+    print("Can't import django_heroku.")
